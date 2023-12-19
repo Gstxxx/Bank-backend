@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  line-height: 1.6;
+  font-size: 18px;
+  background-color: #111827;
+}
+.logo {
+  background-image: url("./picpay-logo.svg");
+}
+.cartao-gif {
+  background-image: url("./cartao.gif");
+}
+.cel {
+  background-image: url("./cel.webp");
+}
+.bg-pic {
+  background-image: url("./bg.jpeg");
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+@import url(https://fonts.googleapis.com/css?family=Krona+One);
+
+h1 {
+  font-family: "Monument extended", "Krona One", sans-serif;
+  font-weight: bolder;
+}
+.container {
+  background-color: white;
+}
+.float-label-input {
+  margin: 10px 0;
+}
+
+.float-label-input:focus-within label,
+.float-label-input input:not(:placeholder-shown) + label {
+  transform: translateY(-1.5rem) scale(0.75);
+  background-color: white;
+}
+
+.card-skeleton {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem;
+  border: 1px solid grey;
+  border-radius: 5px;
+}
+
+.card-skeleton .left-col {
+  margin-right: 1rem;
+}
+.card-skeleton .righ-col {
+  flex: 0.5;
+}

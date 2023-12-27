@@ -1,5 +1,5 @@
 import { useState } from "react";
-import RegisterForm from "./RegisterForm";
+import RegisterForm from "../components/RegistrationForm/RegistrationForm.js";
 import LoginForm from "./LoginForm";
 
 const Index = () => {

@@ -1,6 +1,6 @@
 import mysql from "mysql2/promise";
 
-export default async function establishConnection() {
+export async function establishConnection() {
   return await mysql.createConnection({
     host: "mysql",
     user: "admin",

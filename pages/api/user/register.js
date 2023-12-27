@@ -1,25 +1,8 @@
 import bcrypt from "bcrypt";
 import { validate } from "gerador-validador-cpf";
-import { checkIfCPFExists } from "../../functions/validate/validateCPF";
-import { checkIfEmailExists } from "../../functions/validate/validateEmail";
-import { closeConnection } from "../../functions/connection/closeConnection";
-import { establishConnection } from "../../functions/connection/openConnection";
+import mysql from "mysql2/promise";
 
-async function saveUserToDatabase(
-  connection,
-  userType,
-  cpf,
-  fullName,
-  email,
-  hashedPassword
-) {
-  const [rows] = await connection.execute(
-    "INSERT INTO app (UserType, document, name, mail, pass, SALDO) VALUES (?, ?, ?, ?, ?, ?)",
-    [userType, cpf, fullName, email, hashedPassword, 0.0]
-  );
-
-  return rows;
-}
+const saltRounds = 10;
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -37,30 +20,45 @@ export default async function handler(req, res) {
   }
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    const connection = await establishConnection();
+    const connection = await mysql.createConnection({
+      host: "mysql",
+      user: "admin",
+      password: "root123",
+      database: "app_db",
+    });
 
-    if (await checkIfCPFExists(connection, cpf)) {
-      await closeConnection(connection);
+    // verifica se o CPF ta no db
+    const [cpfResult] = await connection.execute(
+      "SELECT * FROM app WHERE document = ?",
+      [cpf]
+    );
+
+    if (cpfResult.length > 0) {
+      await connection.end();
       return res.status(400).json({ error: "CPF já cadastrado" });
     }
 
-    if (await checkIfEmailExists(connection, email)) {
-      await closeConnection(connection);
+    // verifica se o e-mail ta no db
+    const [emailResult] = await connection.execute(
+      "SELECT * FROM app WHERE mail = ?",
+      [email]
+    );
+
+    if (emailResult.length > 0) {
+      await connection.end();
       return res.status(400).json({ error: "E-mail já cadastrado" });
     }
 
-    await saveUserToDatabase(
-      connection,
-      0,
-      cpf,
-      fullName,
-      email,
-      hashedPassword
+    // registra no db
+    const [rows] = await connection.execute(
+      "INSERT INTO app (UserType, document, name, mail, pass) VALUES (?, ?, ?, ?, ?)",
+      [0, cpf, fullName, email, hashedPassword]
     );
 
-    await closeConnection(connection);
+    // Fecha a conexão
+    await connection.end();
 
     res.status(200).json({ message: "Registro bem-sucedido!" });
   } catch (error) {

@@ -1,1 +1,1 @@
-# picpay-backend
+# bank-backend
